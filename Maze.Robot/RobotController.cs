@@ -1,4 +1,10 @@
 ﻿using Maze.Library;
+using Microsoft.VisualBasic;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.Design.Serialization;
+using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
 
 namespace Maze.Solver
 {
@@ -8,7 +14,6 @@ namespace Maze.Solver
     public class RobotController
     {
         private readonly IRobot robot;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="RobotController"/> class
         /// </summary>
@@ -35,12 +40,22 @@ namespace Maze.Solver
 
             // Trivial sample algorithm that can just move right
             var reachedEnd = false;
-            robot.ReachedExit += (_, __) => reachedEnd = true;
+            Random rnd = new Random();
 
+            robot.ReachedExit += (_, __) => reachedEnd = true;
+            int counter = 0;
             while (!reachedEnd)
             {
-                robot.Move(Direction.Right);
+                robot.TryMove((Direction)rnd.Next(0, 4));
+
+                counter++;
+                if (counter == 10000000)
+                {
+                    robot.HaltAndCatchFire();
+                    break;
+                }
             }
+
         }
     }
 }
